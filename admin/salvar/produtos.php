@@ -68,5 +68,37 @@
             $consulta->bindParam(":descricao", $descricao);
             $consulta->bindParam(":imagem1", $imagem1);
             $consulta->bindParam(":imagem2", $imagem2);
+        } else {
+
+            //verificar se as imagens estão em branco, caso esteja, inserir a imagem que já esta gravada dentro do banco
+            $sql= "select imagem1, imagem2 from produto 
+                        where id = :id limit 1";
+            $consulta = $pdo->prepare($sql);
+            $consulta->bindParam(":id", $id);
+            $consulta->execute();
+
+            $dados= $consulta->fetch(PDO::FETCH_OBJ);
+
+            if (empty ($imagem1)) $imagem1 =$dados->imagem1;
+            if (empty ($imagem2)) $imagem2 =$dados->imagem2;
+
+            $sql = "update produto set nome = :nome, categoria_id = :categoria_id, valor= :valor,
+                    descricao= :descricao, imagem1= :imagem1, imagem2= :imagem2 where id = :id limit 1";
+                    $consulta = $pdo->prepare($sql);
+                    $consulta->bindParam(":nome", $nome);
+                    $consulta->bindParam(":categoria_id", $categoria_id);
+                    $consulta->bindParam(":valor", $valor);
+                    $consulta->bindParam(":descricao", $descricao);
+                    $consulta->bindParam(":imagem1", $imagem1);
+                    $consulta->bindParam(":imagem2", $imagem2);
+                    $consulta->bindParam(":id", $id);
+        }
+
+        if ($consulta->execute()) {
+            //enviar a tela para a listagem
+
+            echo "<script>location.href='listar/produtos';</script>";
+        } else {
+            mensagemErro("Erro ao salvar dados");
         }
     }
