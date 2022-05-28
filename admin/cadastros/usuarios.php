@@ -66,3 +66,7 @@
         </form>
     </div>
 </div>
+<script>
+    //selecionar o campo ativo
+    $("#ativo").val("<?=$ativo?>")
+</script>
